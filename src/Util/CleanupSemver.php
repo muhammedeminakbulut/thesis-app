@@ -8,7 +8,6 @@
 
 namespace App\Util;
 
-
 class CleanupSemver
 {
     /**

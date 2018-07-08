@@ -1,7 +1,9 @@
 <?php
 namespace App\Service;
 
-
+use App\Model\GitRepository;
+use App\Model\InvalidRepository;
+use App\Model\RepositoryInterface;
 use App\Util\CleanupSemver;
 use Composer\Semver\Semver;
 use TQ\Git\Repository\Repository;
@@ -10,35 +12,49 @@ use TQ\Vcs\Cli\Call;
 
 class CheckoutGitRepository
 {
-    const CHECKOUT_DIR = '/Users/muhammed/Documents/studie/Afstuderen/app';
+    /**
+     * @var string
+     */
+    private $checkoutDir;
 
-    public function checkoutRepo($gitUrl)
+    /**
+     * CheckoutGitRepository constructor.
+     * @param string $checkoutDir
+     */
+    public function __construct(string $checkoutDir)
+    {
+        $this->checkoutDir = $checkoutDir;
+    }
+
+    public function checkoutRepo($gitUrl): RepositoryInterface
     {
         // tmp name to remove afterwards
         $repo = strtolower(md5(date('His')));
 
-        $callResult = Call::create(sprintf('git clone %s %s', $gitUrl, $repo), self::CHECKOUT_DIR)->execute();
+        $callResult = Call::create(sprintf('git clone %s %s', $gitUrl, $repo), $this->checkoutDir)->execute();
 
         if ($callResult->getReturnCode() === 0) {
-            return sprintf('%s/%s', self::CHECKOUT_DIR, $repo);
+            return new GitRepository($gitUrl, sprintf('%s/%s', $this->checkoutDir, $repo));
         }
 
-        // maak een data object
-        return false;
+        return new InvalidRepository($gitUrl);
     }
 
-    public function getAllTags($repoUrl): array
+    public function getAllTags(RepositoryInterface $repository): array
     {
         StreamWrapper::register('git');
-        $git = Repository::open($repoUrl);
+        $git = Repository::open($repository->getLocalPath());
 
-        $tags = explode(PHP_EOL, $git->getGit()->{'tag'}($repoUrl)->getStdOut());
+        $tags = explode(PHP_EOL, $git->getGit()->{'tag'}($repository->getLocalPath())->getStdOut());
         return Semver::sort(CleanupSemver::cleanUp($tags));
     }
 
-    public function removeRepo($repoUri)
+    public function removeRepo(RepositoryInterface $repository): void
     {
+        if ($repository instanceof InvalidRepository) {
+            return;
+        }
 
-        $callResult = Call::create(sprintf('rm -rf %s', $repoUri), self::CHECKOUT_DIR)->execute();
+        Call::create(sprintf('rm -rf %s', $repository->getLocalPath()), $this->checkoutDir)->execute();
     }
 }

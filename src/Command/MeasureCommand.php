@@ -32,14 +32,12 @@ class MeasureCommand extends Command
         parent::__construct();
         $this->git = $git;
         $this->metrics = $metrics;
-
     }
 
     public function configure()
     {
         $this->setName('app:measure')->setDescription('Measures all the things');
     }
-
 
     /**
      * The plan:
@@ -55,8 +53,6 @@ class MeasureCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $repo = '/Users/muhammed/Documents/studie/Afstuderen/app/url-bundle';
-
         $output->writeln([
             'Measure all the things',
             '============',
@@ -64,14 +60,16 @@ class MeasureCommand extends Command
         ]);
 
         $output->writeln('Start '. date('H:i:s'));
-        $repoUri = $this->git->checkoutRepo('git@github.com:zicht/url-bundle.git');
+        $repository = $this->git->checkoutRepo('git@github.com:symfony/symfony.git');
 
-        $tags = $this->git->getAllTags($repoUri);
+        $tags = $this->git->getAllTags($repository);
 
-        $results = $this->metrics->withTags($repoUri, $tags);
+        $results = $this->metrics->withTags($repository, $tags);
 
-        $this->git->removeRepo($repoUri);
+        $this->git->removeRepo($repository);
 
         $output->writeln('End '. date('H:i:s'));
+
+        return true;
     }
 }

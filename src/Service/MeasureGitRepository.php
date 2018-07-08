@@ -1,41 +1,41 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: muhammed
- * Date: 20-05-18
- * Time: 11:51
- */
 
 namespace App\Service;
 
-
-use SebastianBergmann\FinderFacade\FinderFacade;
-use SebastianBergmann\PHPLOC\Analyser;
+use App\Model\RepositoryInterface;
 use TQ\Vcs\Cli\Call;
 
 class MeasureGitRepository
 {
-    public function withTags($repo, array $tags) : array
+    /**
+     * @var AnalyseGitRepository
+     */
+    private $analyser;
+
+    /**
+     * @var SniffGitRepository
+     */
+    private $sniffer;
+
+    /**
+     * MeasureGitRepository constructor.
+     * @param AnalyseGitRepository $analyser
+     * @param SniffGitRepository $sniffer
+     */
+    public function __construct(AnalyseGitRepository $analyser, SniffGitRepository $sniffer)
+    {
+        $this->analyser = $analyser;
+        $this->sniffer = $sniffer;
+    }
+
+    public function withTags(RepositoryInterface $repo, array $tags) : array
     {
         $results = [];
-        foreach ($tags as $tag)
-        {
-            $callResult = Call::create(sprintf('git checkout %s', $tag), $repo)->execute();
+        foreach ($tags as $tag) {
+            Call::create(sprintf('git checkout %s', $tag), $repo->getLocalPath())->execute();
 
-            try {
-                $finder = new FinderFacade([$repo]);
-                $files  = $finder->findFiles();
-            } catch (\InvalidArgumentException $ex) {
-                return [];
-            }
-
-            if (empty($files)) {
-                return [];
-            }
-
-            $analyser = new Analyser();
-
-            $results[$tag] = $analyser->countFiles($files, null);
+            $results[$tag]['analyser'] = $this->analyser->analyse($repo);
+            $results[$tag]['sniffer'] = $this->sniffer->sniff($repo);
         }
 
         return $results;
