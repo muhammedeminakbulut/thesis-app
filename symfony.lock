@@ -2,10 +2,16 @@
     "composer/semver": {
         "version": "1.4.2"
     },
+    "league/csv": {
+        "version": "9.1.4"
+    },
     "nette/utils": {
         "version": "v2.5.2"
     },
     "object-calisthenics/phpcs-calisthenics-rules": {
+        "version": "v3.2.1"
+    },
+    "pda/pheanstalk": {
         "version": "v3.2.1"
     },
     "phploc/phploc": {

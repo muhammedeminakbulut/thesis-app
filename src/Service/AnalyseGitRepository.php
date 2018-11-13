@@ -28,6 +28,15 @@ class AnalyseGitRepository
 
         $analyser = new Analyser();
 
-        return $analyser->countFiles($files, null);
+        $result = $analyser->countFiles($files, null);
+
+        return [
+            'loc' => $result['loc'],
+            'cloc' => $result['cloc'],
+            'cyclomatic_complexity' => $result['ccn'],
+            'duplication' => 0,
+            'unit_size' => $result['methodLlocAvg'],
+            'unit_interface-size' => 0,
+        ];
     }
 }

@@ -13,10 +13,16 @@ services:
         bind:
 #            $sniffStandard: PSR2
             $sniffStandard: 'vendor/object-calisthenics/phpcs-calisthenics-rules/src/ObjectCalisthenics/ruleset.xml'
-            $checkoutDir: '/Users/muhammed/Documents/studie/Afstuderen/app'
+            $checkoutDir: '%kernel.root_dir%/../..'
+            $feed: '%kernel.root_dir%/../data/popular-php-repositories.json'
+            $defaultCSVDirectory: '%kernel.root_dir%/../data'
+
 
     # makes classes in src/ available to be used as services
     # this creates a service per class whose id is the fully-qualified class name
     App\:
         resource: '../src/*'
         exclude: '../src/{Entity,Migrations,Tests,Kernel.php}'
+
+    Pheanstalk\Pheanstalk:
+        arguments: ['127.0.0.1']

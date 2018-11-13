@@ -25,7 +25,7 @@ class SniffGitRepository
     {
         $result = Call::create(
             sprintf(
-                './vendor/bin/phpcs %s --standard=%s --report=json',
+                './vendor/bin/phpcs %s --standard=%s --report=json --extensions=php',
                 $repo->getLocalPath(),
                 $this->standard
             )
@@ -34,13 +34,15 @@ class SniffGitRepository
         $report = json_decode($result->getStdOut(), true);
 
         if (isset($report['totals'])) {
-            return $report['totals'];
+            return [
+                'errors' => $report['totals']['errors'],
+                'warnings' => $report['totals']['warnings'],
+            ];
         }
 
         return [
             'errors' => 0,
             'warnings' => 0,
-            'fixables' => 0,
         ];
     }
 }

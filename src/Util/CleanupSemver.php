@@ -21,11 +21,11 @@ class CleanupSemver
         $newVersions = [];
 
         foreach ($versions as $version) {
-            if (preg_match('~^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$~', $version)) {
+            if (preg_match('~^v?(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$~', $version)) {
                 $newVersions[] = $version;
             }
         }
-        
+
         return $newVersions;
     }
 }

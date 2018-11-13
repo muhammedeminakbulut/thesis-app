@@ -24,6 +24,7 @@ class CheckoutGitRepository
     public function __construct(string $checkoutDir)
     {
         $this->checkoutDir = $checkoutDir;
+        StreamWrapper::register('git');
     }
 
     public function checkoutRepo($gitUrl): RepositoryInterface
@@ -42,7 +43,6 @@ class CheckoutGitRepository
 
     public function getAllTags(RepositoryInterface $repository): array
     {
-        StreamWrapper::register('git');
         $git = Repository::open($repository->getLocalPath());
 
         $tags = explode(PHP_EOL, $git->getGit()->{'tag'}($repository->getLocalPath())->getStdOut());
