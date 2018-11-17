@@ -5,6 +5,8 @@ namespace App\Service;
 use App\Model\InvalidRepository;
 use App\Model\RepositoryInterface;
 use SebastianBergmann\FinderFacade\FinderFacade;
+use SebastianBergmann\PHPCPD\Detector\Detector;
+use SebastianBergmann\PHPCPD\Detector\Strategy\DefaultStrategy;
 use SebastianBergmann\PHPLOC\Analyser;
 
 class AnalyseGitRepository
@@ -30,11 +32,19 @@ class AnalyseGitRepository
 
         $result = $analyser->countFiles($files, null);
 
+        /**
+         * part of the copy paste detector.
+         */
+        $strategy = new DefaultStrategy();
+        $detector = new Detector($strategy);
+
+        $clones = $detector->copyPasteDetection($files);
+
         return [
             'loc' => $result['loc'],
             'cloc' => $result['cloc'],
             'cyclomatic_complexity' => $result['ccn'],
-            'duplication' => 0,
+            'duplication' => $clones->getPercentage(),
             'unit_size' => $result['methodLlocAvg'],
             'unit_interface-size' => 0,
         ];

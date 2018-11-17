@@ -17,6 +17,9 @@
     "phploc/phploc": {
         "version": "4.0.1"
     },
+    "phpunit/php-timer": {
+        "version": "2.0.0"
+    },
     "psr/cache": {
         "version": "1.0.1"
     },
@@ -31,6 +34,9 @@
     },
     "sebastian/finder-facade": {
         "version": "1.2.2"
+    },
+    "sebastian/phpcpd": {
+        "version": "4.1.0"
     },
     "sebastian/version": {
         "version": "2.0.1"
