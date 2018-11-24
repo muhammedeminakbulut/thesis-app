@@ -1,4 +1,7 @@
 <?php
+/**
+ * Copyright (c) Muhammed Akbulut
+ */
 
 namespace App\Service;
 

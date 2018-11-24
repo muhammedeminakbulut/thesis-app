@@ -1,16 +1,13 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: muhammed
- * Date: 13-11-18
- * Time: 21:50
+ * Copyright (c) Muhammed Akbulut
  */
 
 namespace App\Command;
 
-
 use App\Service\GitRepositoryFeed;
 use Pheanstalk\Pheanstalk;
+use Pheanstalk\PheanstalkInterface;
 use Symfony\Component\Console\Command\Command;
 
 use Symfony\Component\Console\Input\InputInterface;
@@ -60,7 +57,12 @@ class CreateJobsCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         foreach ($this->repoFeed->getRepositories() as $gitRepoUrl) {
-            $this->queue->useTube('measure')->put(json_encode(['repo' => $gitRepoUrl->getUrl(), 'name' => $gitRepoUrl->getName()]));
+            $this->queue->useTube('measure')->put(
+                json_encode(['repo' => $gitRepoUrl->getUrl(), 'name' => $gitRepoUrl->getName()]),
+                PheanstalkInterface::DEFAULT_PRIORITY,
+                PheanstalkInterface::DEFAULT_DELAY,
+                6400
+            );
         }
 
         return true;

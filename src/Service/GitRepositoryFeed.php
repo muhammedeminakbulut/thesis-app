@@ -1,13 +1,9 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: muhammed
- * Date: 11-11-18
- * Time: 12:43
+ * Copyright (c) Muhammed Akbulut
  */
 
 namespace App\Service;
-
 
 use App\Model\GitRepoUrl;
 

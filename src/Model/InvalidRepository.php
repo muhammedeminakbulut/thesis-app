@@ -1,9 +1,6 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: muhammed
- * Date: 08-07-18
- * Time: 22:30
+ * Copyright (c) Muhammed Akbulut
  */
 
 namespace App\Model;
