@@ -13,7 +13,7 @@ services:
         bind:
 #            $sniffStandard: PSR2
             $sniffStandard: 'vendor/object-calisthenics/phpcs-calisthenics-rules/src/ObjectCalisthenics/ruleset.xml'
-            $checkoutDir: '%kernel.root_dir%/../..'
+            $checkoutDir: '%kernel.root_dir%/../data/measurement-data'
             $feed: '%kernel.root_dir%/../data/popular-php-repositories.json'
             $defaultCSVDirectory: '%kernel.root_dir%/../data'
 

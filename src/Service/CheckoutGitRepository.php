@@ -34,7 +34,7 @@ class CheckoutGitRepository
     public function checkoutRepo($gitUrl): RepositoryInterface
     {
         // tmp name to remove afterwards
-        $repo = strtolower(md5(date('His')));
+        $repo = strtolower(md5(date('His') . rand(100, PHP_INT_MAX)));
 
         $callResult = Call::create(sprintf('git clone %s %s', $gitUrl, $repo), $this->checkoutDir)->execute();
 
