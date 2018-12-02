@@ -12,6 +12,8 @@
 
 namespace App\SOLID\Sniffs\SingleResponsibility;
 
+use PHP_CodeSniffer\Files\File;
+use PHP_CodeSniffer\Sniffs\Sniff;
 
 /**
  * Class MultipleTraitsSniff
@@ -20,7 +22,22 @@ namespace App\SOLID\Sniffs\SingleResponsibility;
  *
  * A class with multiple traits should report an error.
  */
-class MultipleTraitsSniff
+class MultipleTraitsSniff implements Sniff
 {
+    /**
+     * @inheritdoc
+     */
+    public function register()
+    {
+        return [];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function process(File $phpcsFile, $stackPtr)
+    {
+        // TODO: Implement process() method.
+    }
 
 }

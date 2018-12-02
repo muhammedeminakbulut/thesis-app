@@ -21,7 +21,7 @@ class AnalyseGitRepository
         }
 
         try {
-            $finder = new FinderFacade([$repo->getLocalPath()]);
+            $finder = new FinderFacade([$repo->getLocalPath()], [], ['*.php']);
             $files  = $finder->findFiles();
         } catch (\InvalidArgumentException $exception) {
             return [];

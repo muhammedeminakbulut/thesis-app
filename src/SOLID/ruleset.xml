@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<!--
+  ~ Copyright (c) Muhammed Akbulut
+  -->
+
+<ruleset name="SOLID">
+    <description>A set of sniffs to detect SOLID principles violations. Created for academic research purposes</description>
+</ruleset>

@@ -72,9 +72,6 @@ class MeasureCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-
-        error_reporting(E_ALL & ~E_WARNING);
-        ini_set('display_errors', false);
         $output->writeln([
             'Measure all the things',
             '============',
