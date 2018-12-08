@@ -16,7 +16,7 @@ use PHP_CodeSniffer\Sniffs\Sniff;
  */
 class ObjectInstantiationInClassSniff implements Sniff
 {
-    const ERROR_MESSAGE = 'Dependency Inversion Principle violation: an object is created with `new` try to inject it.';
+    const ERROR_MESSAGE = 'Dependency Inversion principle violation: an object is created with `new` try to inject it.';
 
     /**
      * @inheritdoc

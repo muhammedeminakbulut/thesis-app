@@ -17,12 +17,14 @@ use PHP_CodeSniffer\Sniffs\Sniff;
  */
 class InterfacesOrAbstractSniff implements Sniff
 {
+    const ERROR_MESSAGE = 'Open Closed principle violation: %s class is not `Open` because it does not implement interfaces or is not abstract.';
+
     /**
      * @inheritdoc
      */
     public function register()
     {
-        return [];
+        return [T_CLASS];
     }
 
     /**
@@ -30,7 +32,19 @@ class InterfacesOrAbstractSniff implements Sniff
      */
     public function process(File $phpcsFile, $stackPtr)
     {
-        // TODO: Implement process() method.
+        $tokens = $phpcsFile->getTokens();
+
+        $classNameToken = $tokens[$phpcsFile->findNext([T_STRING], $stackPtr)];
+
+        $properties = $phpcsFile->getClassProperties($stackPtr);
+
+        if ($properties['is_abstract'] === false && $phpcsFile->findImplementedInterfaceNames($stackPtr) === false) {
+            $phpcsFile->addError(
+                sprintf(self::ERROR_MESSAGE, $classNameToken['content']),
+                $stackPtr,
+                'NotOpen'
+            );
+        }
     }
 
 }

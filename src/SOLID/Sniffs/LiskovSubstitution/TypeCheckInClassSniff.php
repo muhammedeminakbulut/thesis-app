@@ -16,7 +16,7 @@ use PHP_CodeSniffer\Sniffs\Sniff;
  */
 class TypeCheckInClassSniff implements Sniff
 {
-    const ERROR_MESSAGE = 'Liskov Substitution violation: %s used';
+    const ERROR_MESSAGE = 'Liskov Substitution principle violation: %s used. ';
 
     /**
      * @inheritdoc

@@ -3,13 +3,6 @@
  * Copyright (c) Muhammed Akbulut
  */
 
-/**
- * Created by PhpStorm.
- * User: muhammed
- * Date: 2018-11-24
- * Time: 20:16
- */
-
 namespace App\SOLID\Sniffs\SingleResponsibility;
 
 use PHP_CodeSniffer\Files\File;
@@ -24,12 +17,14 @@ use PHP_CodeSniffer\Sniffs\Sniff;
  */
 class MultipleTraitsSniff implements Sniff
 {
+    const ERROR_MESSAGE = 'Single Responsibility principle violation: %s has multiple traits which can be a multiple reason to change.';
+
     /**
      * @inheritdoc
      */
     public function register()
     {
-        return [];
+        return [T_CLASS];
     }
 
     /**
@@ -37,7 +32,41 @@ class MultipleTraitsSniff implements Sniff
      */
     public function process(File $phpcsFile, $stackPtr)
     {
-        // TODO: Implement process() method.
+        $tokens = $phpcsFile->getTokens();
+
+        $classNameToken = $tokens[$phpcsFile->findNext([T_STRING], $stackPtr)];
+
+        $closer = $tokens[$stackPtr]['scope_closer'];
+        $useTokens = [];
+        for ($i = $stackPtr; $i < $closer;) {
+            $i = $phpcsFile->findNext([T_USE], $i + 1, $closer);
+
+            if ($i === false) {
+                break;
+            }
+
+            $useTokens[] = $i;
+        }
+
+        if (count($useTokens) > 1) {
+            $phpcsFile->addError(
+                sprintf(self::ERROR_MESSAGE, $classNameToken['content']),
+                $stackPtr,
+                'MultipleTraits'
+            );
+        }
+
+        foreach ($useTokens as $useToken) {
+            $endPointer = $phpcsFile->findNext([T_OPEN_CURLY_BRACKET, T_COMMA, T_SEMICOLON], $useToken);
+
+            if ($tokens[$endPointer]['code'] === T_OPEN_CURLY_BRACKET || $tokens[$endPointer]['code'] === T_COMMA) {
+                $phpcsFile->addError(
+                    sprintf(self::ERROR_MESSAGE, $classNameToken['content']),
+                    $stackPtr,
+                    'MultipleTraits'
+                );
+            }
+        }
     }
 
 }

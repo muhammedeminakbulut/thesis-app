@@ -19,7 +19,7 @@ use PHP_CodeSniffer\Sniffs\Sniff;
  */
 class DependenciesAbstractOrInterfacesSniff implements Sniff
 {
-    const ERROR_MESSAGE = 'Dependency Inversion Principle violation: %s is not an interface nor abstract contract.';
+    const ERROR_MESSAGE = 'Dependency Inversion principle violation: %s is not an interface nor abstract contract.';
     const SEARCH_ABSTRACT = 'abstract';
     const SEARCH_INTERFACE = 'interface';
 
@@ -51,15 +51,22 @@ class DependenciesAbstractOrInterfacesSniff implements Sniff
     {
         $tokens = $phpcsFile->getTokens();
 
-        $line = $stackPtr;
-        while ($line = $phpcsFile->findNext([T_STRING], $line)) {
-            if ($tokens[$line]['content'] === '__construct') {
+        $constructorToken = null;
+
+        $closer = $tokens[$stackPtr]['scope_closer'];
+        for ($i = $stackPtr; $i < $closer;) {
+            if ($tokens[$i]['content'] === '__construct') {
+                $constructorToken = $i;
                 break;
             }
-            $line++;
+            $i++;
         }
 
-        $properties = $phpcsFile->getMethodParameters($phpcsFile->findPrevious([T_FUNCTION], $line));
+        if ($constructorToken === null) {
+            return;
+        }
+
+        $properties = $phpcsFile->getMethodParameters($phpcsFile->findPrevious([T_FUNCTION], $constructorToken));
 
         foreach ($properties as $property) {
             if (in_array($property['type_hint'], self::IGNORE_TYPE_HINTS)) {

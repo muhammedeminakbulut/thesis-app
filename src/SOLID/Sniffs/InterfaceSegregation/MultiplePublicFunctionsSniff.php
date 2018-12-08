@@ -3,7 +3,7 @@
  * Copyright (c) Muhammed Akbulut
  */
 
-namespace App\SOLID\Sniffs\SingleResponsibility;
+namespace App\SOLID\Sniffs\InterfaceSegregation;
 
 use PHP_CodeSniffer\Files\File;
 use PHP_CodeSniffer\Sniffs\Sniff;
@@ -11,13 +11,13 @@ use PHP_CodeSniffer\Sniffs\Sniff;
 /**
  * Class MultiplePublicFunctionsSniff
  *
- * A class with multiple public functions has multiple reasons to change.
+ * A class with multiple contracts on one interface violates the interface segregation principle.
  *
  * This sniff registers an error when a class has multiple public functions.
  */
 class MultiplePublicFunctionsSniff implements Sniff
 {
-    const ERROR_MESSAGE = 'Single Responsibility principle violation: %s has multiple public functions. All public functions are a reason to change this class.';
+    const ERROR_MESSAGE = 'Interface Segregation principle violation: %s has multiple contracts on one interface.';
 
     /**
      * @inheritdoc
@@ -25,7 +25,7 @@ class MultiplePublicFunctionsSniff implements Sniff
     public function register()
     {
         return [
-            T_CLASS,
+            T_INTERFACE,
         ];
     }
 
@@ -65,7 +65,7 @@ class MultiplePublicFunctionsSniff implements Sniff
             $phpcsFile->addError(
                 sprintf(self::ERROR_MESSAGE, $classNameToken['content']),
                 $stackPtr,
-                'MultiplePublicFunctions'
+                'MultipleContracts'
             );
         }
     }
