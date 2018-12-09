@@ -10,6 +10,7 @@ use App\Service\CheckoutGitRepository;
 use App\Service\MeasureGitRepository;
 use League\Csv\Writer;
 use Pheanstalk\Pheanstalk;
+use Pheanstalk\PheanstalkInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -40,10 +41,10 @@ class MeasureCommand extends Command
      * MeasureCommand constructor.
      * @param CheckoutGitRepository $git
      * @param MeasureGitRepository $metrics
-     * @param Pheanstalk $queue
+     * @param PheanstalkInterface $queue
      * @param string $defaultCSVDirectory
      */
-    public function __construct(CheckoutGitRepository $git, MeasureGitRepository $metrics, Pheanstalk $queue, string $defaultCSVDirectory)
+    public function __construct(CheckoutGitRepository $git, MeasureGitRepository $metrics, PheanstalkInterface $queue, string $defaultCSVDirectory)
     {
         parent::__construct();
         $this->git = $git;

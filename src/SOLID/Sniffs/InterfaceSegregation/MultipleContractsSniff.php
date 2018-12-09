@@ -9,13 +9,13 @@ use PHP_CodeSniffer\Files\File;
 use PHP_CodeSniffer\Sniffs\Sniff;
 
 /**
- * Class MultiplePublicFunctionsSniff
+ * Class MultipleContractsSniff
  *
  * A class with multiple contracts on one interface violates the interface segregation principle.
  *
  * This sniff registers an error when a class has multiple public functions.
  */
-class MultiplePublicFunctionsSniff implements Sniff
+class MultipleContractsSniff implements Sniff
 {
     const ERROR_MESSAGE = 'Interface Segregation principle violation: %s has multiple contracts on one interface.';
 

@@ -24,6 +24,7 @@ class DependenciesAbstractOrInterfacesSniff implements Sniff
     const SEARCH_INTERFACE = 'interface';
 
     const IGNORE_TYPE_HINTS = [
+        '',
         'object',
         'string',
         'iterable',
@@ -54,32 +55,39 @@ class DependenciesAbstractOrInterfacesSniff implements Sniff
         $constructorToken = null;
 
         $closer = $tokens[$stackPtr]['scope_closer'];
+
+        $functions = [];
         for ($i = $stackPtr; $i < $closer;) {
-            if ($tokens[$i]['content'] === '__construct') {
-                $constructorToken = $i;
+            $i = $phpcsFile->findNext([T_FUNCTION], $i + 1, $closer);
+
+            if ($i === false) {
                 break;
             }
-            $i++;
+
+            $functions[] = $i;
         }
 
-        if ($constructorToken === null) {
-            return;
-        }
-
-        $properties = $phpcsFile->getMethodParameters($phpcsFile->findPrevious([T_FUNCTION], $constructorToken));
-
-        foreach ($properties as $property) {
-            if (in_array($property['type_hint'], self::IGNORE_TYPE_HINTS)) {
+        foreach ($functions as $function) {
+            $methodProperties = $phpcsFile->getMethodProperties($function);
+            if ($methodProperties['scope'] !== 'public') {
                 continue;
             }
 
-            if (strpos(strtolower($property['type_hint']), self::SEARCH_ABSTRACT) === false
-                && strpos(strtolower($property['type_hint']), self::SEARCH_INTERFACE) === false) {
-                $phpcsFile->addError(
-                    sprintf(self::ERROR_MESSAGE, $property['type_hint']),
-                    $property['type_hint_token'],
-                    'DependencyNonAbstractOrInterface'
-                );
+            $parameters = $phpcsFile->getMethodParameters($function);
+
+            foreach ($parameters as $parameter) {
+                if (in_array($parameter['type_hint'], self::IGNORE_TYPE_HINTS)) {
+                    continue;
+                }
+
+                if (strpos(strtolower($parameter['type_hint']), self::SEARCH_ABSTRACT) === false
+                    && strpos(strtolower($parameter['type_hint']), self::SEARCH_INTERFACE) === false) {
+                    $phpcsFile->addError(
+                        sprintf(self::ERROR_MESSAGE, $parameter['type_hint']),
+                        $parameter['type_hint_token'],
+                        'DependencyNonAbstractOrInterface'
+                    );
+                }
             }
         }
     }
