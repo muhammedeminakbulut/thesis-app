@@ -35,4 +35,12 @@ class InvalidRepository implements RepositoryInterface
     {
         throw new \BadFunctionCallException('This function should not be called');
     }
+
+    /**
+     * @return array
+     */
+    public function getData(): array
+    {
+        throw new \BadFunctionCallException('This function should not be called');
+    }
 }

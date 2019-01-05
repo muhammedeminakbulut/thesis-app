@@ -18,14 +18,21 @@ class GitRepository implements RepositoryInterface
     private $localPath;
 
     /**
-     * Repository constructor.
-     * @param string $remote
-     * @param string $localPath
+     * @var array
      */
-    public function __construct(string $remote, string $localPath = null)
+    private $data;
+
+    /**
+     * GitRepository constructor.
+     * @param string $remote
+     * @param string|null $localPath
+     * @param array $data
+     */
+    public function __construct(string $remote, string $localPath = null, array $data = [])
     {
         $this->remote = $remote;
         $this->localPath = $localPath;
+        $this->data = $data;
     }
 
     /**
@@ -42,5 +49,13 @@ class GitRepository implements RepositoryInterface
     public function getLocalPath(): ?string
     {
         return $this->localPath;
+    }
+
+    /**
+     * @return array
+     */
+    public function getData(): array
+    {
+        return $this->data;
     }
 }

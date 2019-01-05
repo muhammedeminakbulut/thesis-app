@@ -19,14 +19,21 @@ class GitRepoUrl
     private $url;
 
     /**
+     * @var int
+     */
+    private $forks;
+
+    /**
      * GitRepoUrl constructor.
      * @param string $name
      * @param string $url
+     * @param int $forks
      */
-    public function __construct(string $name, string $url)
+    public function __construct(string $name, string $url, int $forks)
     {
         $this->name = $name;
         $this->url = $url;
+        $this->forks = $forks;
     }
 
     /**
@@ -43,5 +50,13 @@ class GitRepoUrl
     public function getUrl(): string
     {
         return $this->url;
+    }
+
+    /**
+     * @return int
+     */
+    public function getForks(): int
+    {
+        return $this->forks;
     }
 }

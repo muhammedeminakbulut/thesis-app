@@ -84,12 +84,12 @@ class MeasureCommand extends Command
             ->ignore('default')
             ->reserve();
         $jobData = json_decode($job->getData(), true);
-        $gitRepoUrl = new GitRepoUrl($jobData['name'], $jobData['repo']);
+        $gitRepoUrl = new GitRepoUrl($jobData['name'], $jobData['repo'], $jobData['forks_count']);
 
         $filePath = sprintf(
             '%s/measurement-data/%s.csv',
             $this->defaultCSVDirectory,
-            str_replace('/', '-',$gitRepoUrl->getName())
+            str_replace('/', '-', $gitRepoUrl->getName())
         );
 
         if (!file_exists($filePath)) {
@@ -107,6 +107,8 @@ class MeasureCommand extends Command
                 'analyser_duplication',
                 'analyser_unit_size',
                 'analyser_unit_interface_size',
+                'analyser_forks',
+                'analyser_contributor',
                 'sniffer_errors',
                 'sniffer_warnings',
             ]
@@ -119,6 +121,10 @@ class MeasureCommand extends Command
         $tags = $this->git->getAllTags($repository);
 
         $results = $this->metrics->withTags($repository, $tags);
+
+        foreach ($results as $key => $value) {
+            $results[$key]['analyser_forks'] = $gitRepoUrl->getForks();
+        }
 
         $csv->insertAll($results);
 

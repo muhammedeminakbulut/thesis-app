@@ -58,10 +58,16 @@ class CreateJobsCommand extends Command
     {
         foreach ($this->repoFeed->getRepositories() as $gitRepoUrl) {
             $this->queue->useTube('measure')->put(
-                json_encode(['repo' => $gitRepoUrl->getUrl(), 'name' => $gitRepoUrl->getName()]),
+                json_encode(
+                    [
+                        'repo' => $gitRepoUrl->getUrl(),
+                        'name' => $gitRepoUrl->getName(),
+                        'forks_count' => $gitRepoUrl->getForks()
+                    ]
+                ),
                 PheanstalkInterface::DEFAULT_PRIORITY,
                 PheanstalkInterface::DEFAULT_DELAY,
-                6400
+                25600
             );
         }
 

@@ -23,7 +23,7 @@ class GitRepositoryFeed
         $result = json_decode(file_get_contents($feed), true);
         $this->repositories = array_map(
             function ($array) {
-                return new GitRepoUrl($array['full_name'], $array['ssh_url']);
+                return new GitRepoUrl($array['full_name'], $array['ssh_url'], $array['forks_count']);
             },
             $result['items']
         );

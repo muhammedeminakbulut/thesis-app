@@ -16,4 +16,6 @@ interface RepositoryInterface
      * @return string
      */
     public function getLocalPath(): ?string;
+
+    public function getData(): array;
 }

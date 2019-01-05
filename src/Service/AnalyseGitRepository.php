@@ -43,6 +43,9 @@ class AnalyseGitRepository
 
         $clones = $detector->copyPasteDetection($files);
 
+        //count contributors
+        $contributors = CountContributors::countContributors($repo);
+
         return [
             'loc' => $result['loc'],
             'cloc' => $result['cloc'],
@@ -50,6 +53,8 @@ class AnalyseGitRepository
             'duplication' => $clones->getPercentage(),
             'unit_size' => $result['methodLlocAvg'],
             'unit_interface-size' => 0,
+            'forks' => 0,
+            'contributors' => $contributors,
         ];
     }
 }
