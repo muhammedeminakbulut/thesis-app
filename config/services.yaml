@@ -12,7 +12,7 @@ services:
                             # The best practice is to be explicit about your dependencies anyway.
         bind:
 #            $sniffStandard: PSR2
-            $sniffStandard: 'vendor/object-calisthenics/phpcs-calisthenics-rules/src/ObjectCalisthenics/ruleset.xml'
+            $sniffStandard: 'src/SOLID/ruleset.xml'
             $checkoutDir: '%kernel.root_dir%/../data/measurement-data'
             $feed: '%kernel.root_dir%/../data/popular-php-repositories.json'
             $defaultCSVDirectory: '%kernel.root_dir%/../data'
