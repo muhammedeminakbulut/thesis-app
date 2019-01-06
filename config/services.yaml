@@ -16,6 +16,7 @@ services:
             $checkoutDir: '%kernel.root_dir%/../data/git'
             $feed: '%kernel.root_dir%/../data/popular-php-repositories.json'
             $defaultCSVDirectory: '%kernel.root_dir%/../data'
+            $cwd: '%kernel.root_dir%/..'
 
 
     # makes classes in src/ available to be used as services

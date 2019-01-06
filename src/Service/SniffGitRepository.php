@@ -15,13 +15,17 @@ class SniffGitRepository
 {
     private $standard;
 
+    private $cwd;
+
     /**
      * SniffGitRepository constructor.
      * @param string $sniffStandard
+     * @param string $cwd
      */
-    public function __construct(string $sniffStandard = 'PSR2')
+    public function __construct(string $sniffStandard, string $cwd)
     {
         $this->standard = $sniffStandard;
+        $this->cwd = $cwd;
     }
 
     public function sniff(RepositoryInterface $repo) : array
@@ -31,7 +35,8 @@ class SniffGitRepository
                 './vendor/bin/phpcs %s --standard=%s --report=json --extensions=php',
                 $repo->getLocalPath(),
                 $this->standard
-            )
+            ),
+            $this->cwd
         )->execute();
 
         $report = json_decode($result->getStdOut(), true);
