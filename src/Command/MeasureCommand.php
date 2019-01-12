@@ -116,17 +116,22 @@ class MeasureCommand extends Command
 
         $output->writeln(sprintf('Start %s %s', date('H:i:s'), $gitRepoUrl->getName()));
 
-        $repository = $this->git->checkoutRepo($gitRepoUrl->getUrl());
+        try {
+            $repository = $this->git->checkoutRepo($gitRepoUrl->getUrl());
+            $tags = $this->git->getAllTags($repository);
 
-        $tags = $this->git->getAllTags($repository);
+            $results = $this->metrics->withTags($repository, $tags);
 
-        $results = $this->metrics->withTags($repository, $tags);
+            foreach ($results as $key => $value) {
+                $results[$key]['analyser_forks'] = $gitRepoUrl->getForks();
+            }
 
-        foreach ($results as $key => $value) {
-            $results[$key]['analyser_forks'] = $gitRepoUrl->getForks();
+            $csv->insertAll($results);
+        } catch (\Exception $exception) {
+            $this->git->removeRepo($repository);
+            $output->writeln(sprintf('End with error %s %s', date('H:i:s'), $gitRepoUrl->getName()));
+            $this->queue->bury($job);
         }
-
-        $csv->insertAll($results);
 
         $this->git->removeRepo($repository);
 
