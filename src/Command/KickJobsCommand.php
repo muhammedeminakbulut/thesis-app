@@ -42,7 +42,7 @@ class KickJobsCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->queue->useTube('measure')->kick(PHP_INT_MAX);
+        $this->queue->useTube('measure')->peekBuried(PHP_INT_MAX);
 
         return true;
     }
