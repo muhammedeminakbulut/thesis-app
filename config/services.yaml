@@ -16,6 +16,8 @@ services:
             $checkoutDir: '%kernel.root_dir%/../data/git'
             $feed: '%kernel.root_dir%/../data/popular-php-repositories.json'
             $defaultCSVDirectory: '%kernel.root_dir%/../data'
+            $mergedDataPath: '%kernel.root_dir%/../data/merged-data/merged-data.csv'
+            $scoreErrorsPath: '%kernel.root_dir%/../data/merged-data/error-score-data.csv'
             $cwd: '%kernel.root_dir%/..'
 
 
