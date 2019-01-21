@@ -18,6 +18,7 @@ services:
             $defaultCSVDirectory: '%kernel.root_dir%/../data'
             $mergedDataPath: '%kernel.root_dir%/../data/merged-data/merged-data.csv'
             $scoreErrorsPath: '%kernel.root_dir%/../data/merged-data/error-score-data.csv'
+            $rateDataPath: '%kernel.root_dir%/../data/merged-data/rated-data.csv'
             $cwd: '%kernel.root_dir%/..'
 
 
