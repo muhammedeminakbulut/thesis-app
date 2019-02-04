@@ -7,6 +7,7 @@
         "ext-json": "^1.5",
         "composer/semver": "^1.4",
         "league/csv": "^9.1",
+        "markrogoyski/math-php": "^0.48.0",
         "object-calisthenics/phpcs-calisthenics-rules": "^3.2",
         "pda/pheanstalk": "^3.2",
         "phploc/phploc": "^4.0",
