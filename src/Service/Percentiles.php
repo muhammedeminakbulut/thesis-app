@@ -5,8 +5,6 @@
 
 namespace App\Service;
 
-use MathPHP\Statistics\Descriptive;
-
 class Percentiles
 {
     const ONE_STAR = 0.05;
@@ -29,10 +27,26 @@ class Percentiles
     {
         $percentiles = [];
         foreach (self::PERCENTILES as $percentile) {
-            $percentiles[(string)$percentile] = Descriptive::percentile($dataset, $percentile*100);
+            $percentiles[(string)$percentile] = Percentiles::calculatePercentile($dataset, $percentile);
         }
 
         return $percentiles;
+    }
+
+    /**
+     * @param $data
+     * @param $percentile
+     * @return float|int
+     * @see https://stackoverflow.com/questions/24048879/how-can-i-calculate-the-nth-percentile-from-an-array-of-doubles-in-php
+     */
+    public static function calculatePercentile($data, $percentile)
+    {
+        $index = $percentile * count($data);
+        if (floor($index) == $index) {
+            return ($data[$index - 1] + $data[$index]) / 2;
+        }
+
+        return $data[(int)floor($index)];
     }
 
     public static function classifyScoreDesc($value, $percentiles)
