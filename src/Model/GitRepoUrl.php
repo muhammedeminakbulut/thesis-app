@@ -19,7 +19,7 @@ class GitRepoUrl
     private $url;
 
     /**
-     * @var int
+     * @var int|null
      */
     private $forks;
 
@@ -29,7 +29,7 @@ class GitRepoUrl
      * @param string $url
      * @param int $forks
      */
-    public function __construct(string $name, string $url, int $forks)
+    public function __construct(string $name, string $url, int $forks = null)
     {
         $this->name = $name;
         $this->url = $url;
