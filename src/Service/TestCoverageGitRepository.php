@@ -26,31 +26,73 @@ class TestCoverageGitRepository
         $this->cwd = $cwd;
     }
 
-    public function getCoverage(RepositoryInterface $repo) : string
+    public function getCoverage(string $name, string $tag, RepositoryInterface $repo): string
     {
+
+
+        if (!is_file(sprintf('%s/composer.json', $repo->getLocalPath()))) {
+            return 'no composer';
+        }
+
         $result = Call::create(
-            'composer install --dev',
+            'composer install',
             $repo->getLocalPath()
         )->execute();
 
         if ($result->getReturnCode() !== 0) {
-           return 'composer failed, '.$result->getStdErr();
+            return 'composer failed, ' . $result->getStdErr();
         }
 
-        if (is_file(sprintf('%s/phpunit.xml.dist', $repo->getLocalPath())) || is_file(sprintf('%s/phpunit.xml', $repo->getLocalPath()))) {
+        if (!(is_file(sprintf('%s/phpunit.xml.dist', $repo->getLocalPath())) || is_file(sprintf('%s/phpunit.xml', $repo->getLocalPath())))) {
             return 'no phpunit config';
         }
 
-        $result = Call::create(
+        $phpunitPath = $this->findPHPUNIT($repo->getLocalPath());
+
+        if ($phpunitPath === null) {
+            return 'phpunit not installed';
+        }
+
+        $filePath = sprintf('%s/%s_%s.txt',
+            $this->cwd . '/data/coverage',
+            str_replace('/', '-', $name),
+            $tag
+        );
+
+        Call::create(
             sprintf(
-                '%s/vendor/bin/phpunit --coverage-text',
-                $repo->getLocalPath()
+                '%s/%s --coverage-text=%s',
+                $repo->getLocalPath(),
+                $phpunitPath,
+                $filePath
             ),
             $this->cwd
         )->execute();
 
-        $report = $result->getStdOut();
+        $report = file_get_contents($filePath);
 
-        var_dump($report);die;
+        $lines = explode(PHP_EOL, $report);
+        $matches = [];
+        $regexp = '/Lines:\s*(\d*.\d*)%\s/';
+        preg_match($regexp, $lines[8], $matches);
+
+        return isset($matches[1]) ? $matches[1] : '0.00';
+    }
+
+
+    private function findPHPUNIT($path): ?string
+    {
+        $paths = [
+            'vendor/phpunit/phpunit/phpunit',
+            'vendor/bin/phpunit',
+        ];
+
+        foreach ($paths as $value) {
+            if (is_file(sprintf('%s/%s', $path, $value))) {
+                return $value;
+            }
+        }
+
+        return null;
     }
 }

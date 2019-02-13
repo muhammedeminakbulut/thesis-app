@@ -25,7 +25,7 @@ class MeasureTestGitRepository
         $this->testCoverage = $testCoverage;
     }
 
-    public function withTags(RepositoryInterface $repo, array $tags): array
+    public function withTags(string $name, RepositoryInterface $repo, array $tags): array
     {
         $results = [];
         foreach ($tags as $tag) {
@@ -35,7 +35,7 @@ class MeasureTestGitRepository
                 Call::create('rm -rf vendor/', $repo->getLocalPath())->execute();
             }
 
-            $analysisResult = $this->testCoverage->getCoverage($repo);
+            $analysisResult = $this->testCoverage->getCoverage($name, $tag, $repo);
             $results[$tag] = array_merge(
                 [$repo->getRemote(), $tag],
                 [$analysisResult]

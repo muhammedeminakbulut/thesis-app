@@ -89,10 +89,10 @@ class MeasureTestCommand extends Command
 
 
         $jobData = [
-            'name' => 'symfony/symfony',
-            'repo' => 'git@github.com:symfony/symfony.git',
+            'name' => 'thephpleague/flysystem',
+            'repo' => 'git@github.com:thephpleague/flysystem.git',
             'tags' => [
-                'v2.0.0',
+                '1.0.0',
             ]
         ];
         $gitRepoUrl = new GitRepoUrl($jobData['name'], $jobData['repo']);
@@ -121,7 +121,7 @@ class MeasureTestCommand extends Command
         try {
             $repository = $this->git->checkoutRepo($gitRepoUrl->getUrl());
 
-            $results = $this->metrics->withTags($repository, $tags);
+            $results = $this->metrics->withTags($gitRepoUrl->getName(), $repository, $tags);
 
             $csv->insertAll($results);
         } catch (\Exception $exception) {
