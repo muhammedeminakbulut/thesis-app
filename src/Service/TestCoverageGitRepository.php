@@ -28,8 +28,6 @@ class TestCoverageGitRepository
 
     public function getCoverage(string $name, string $tag, RepositoryInterface $repo): string
     {
-
-
         if (!is_file(sprintf('%s/composer.json', $repo->getLocalPath()))) {
             return 'no composer';
         }
@@ -59,15 +57,18 @@ class TestCoverageGitRepository
             $tag
         );
 
-        Call::create(
+        $result = Call::create(
             sprintf(
-                '%s/%s --coverage-text=%s',
-                $repo->getLocalPath(),
+                '%s --coverage-text=%s',
                 $phpunitPath,
                 $filePath
             ),
-            $this->cwd
+            $repo->getLocalPath()
         )->execute();
+
+        if ($result->getReturnCode() !== 0) {
+            return 'phpunit failed';
+        }
 
         $report = file_get_contents($filePath);
 
@@ -85,6 +86,7 @@ class TestCoverageGitRepository
         $paths = [
             'vendor/phpunit/phpunit/phpunit',
             'vendor/bin/phpunit',
+            'phpunit',
         ];
 
         foreach ($paths as $value) {

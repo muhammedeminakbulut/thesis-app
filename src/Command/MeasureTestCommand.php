@@ -7,8 +7,8 @@ namespace App\Command;
 
 use App\Model\GitRepoUrl;
 use App\Service\CheckoutGitRepository;
-use App\Service\MeasureGitRepository;
 use App\Service\MeasureTestGitRepository;
+use App\Util\FilterSemver;
 use League\Csv\Writer;
 use Pheanstalk\Pheanstalk;
 use Pheanstalk\PheanstalkInterface;
@@ -79,22 +79,13 @@ class MeasureTestCommand extends Command
             '============',
             '',
         ]);
-//
-//        $job = $this->queue
-//            ->watch('measure')
-//            ->ignore('default')
-//            ->reserve();
-//        $jobData = json_decode($job->getData(), true);
 
+        $job = $this->queue
+            ->watch('measure-test')
+            ->ignore('default')
+            ->reserve();
+        $jobData = json_decode($job->getData(), true);
 
-
-        $jobData = [
-            'name' => 'thephpleague/flysystem',
-            'repo' => 'git@github.com:thephpleague/flysystem.git',
-            'tags' => [
-                '1.0.0',
-            ]
-        ];
         $gitRepoUrl = new GitRepoUrl($jobData['name'], $jobData['repo']);
 
         $filePath = sprintf(
@@ -117,24 +108,25 @@ class MeasureTestCommand extends Command
         );
 
         $output->writeln(sprintf('Start %s %s', date('H:i:s'), $gitRepoUrl->getName()));
-        $tags = $jobData['tags'];
+
         try {
             $repository = $this->git->checkoutRepo($gitRepoUrl->getUrl());
-
+            $tags = FilterSemver::getMinors($this->git->getAllTags($repository));
             $results = $this->metrics->withTags($gitRepoUrl->getName(), $repository, $tags);
 
             $csv->insertAll($results);
         } catch (\Exception $exception) {
             $this->git->removeRepo($repository);
+            $output->writeln($exception->getMessage());
             $output->writeln(sprintf('End with error %s %s', date('H:i:s'), $gitRepoUrl->getName()));
-            //$this->queue->bury($job);
+            $this->queue->bury($job);
         }
 
         $this->git->removeRepo($repository);
 
         $output->writeln(sprintf('End %s %s', date('H:i:s'), $gitRepoUrl->getName()));
 
-        //$this->queue->delete($job);
+        $this->queue->delete($job);
 
         return true;
     }

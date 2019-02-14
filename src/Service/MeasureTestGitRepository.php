@@ -31,8 +31,8 @@ class MeasureTestGitRepository
         foreach ($tags as $tag) {
             Call::create(sprintf('git checkout %s', $tag), $repo->getLocalPath())->execute();
 
-            if (is_dir($repo->getLocalPath().'/vendor')) {
-                Call::create('rm -rf vendor/', $repo->getLocalPath())->execute();
+            if (is_file($repo->getLocalPath().'/composer.lock')) {
+                unlink($repo->getLocalPath().'/composer.lock');
             }
 
             $analysisResult = $this->testCoverage->getCoverage($name, $tag, $repo);

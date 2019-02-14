@@ -3,13 +3,6 @@
  * Copyright (c) Muhammed Akbulut
  */
 
-/**
- * Created by PhpStorm.
- * User: muhammed
- * Date: 15-05-18
- * Time: 21:50
- */
-
 namespace App\Util;
 
 class CleanupSemver

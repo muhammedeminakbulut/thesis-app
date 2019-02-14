@@ -5,6 +5,9 @@
     "league/csv": {
         "version": "9.1.4"
     },
+    "markrogoyski/math-php": {
+        "version": "v0.48.0"
+    },
     "nette/utils": {
         "version": "v2.5.2"
     },
