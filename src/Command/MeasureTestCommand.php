@@ -94,6 +94,15 @@ class MeasureTestCommand extends Command
             str_replace('/', '-', $gitRepoUrl->getName())
         );
 
+        if (file_exists($filePath)) {
+            //already measured
+            //
+            $this->queue->delete($job);
+            $output->writeln(sprintf('Already measured, end %s %s', date('H:i:s'), $gitRepoUrl->getName()));
+
+            return true;
+        }
+
         if (!file_exists($filePath)) {
             touch($filePath);
         }

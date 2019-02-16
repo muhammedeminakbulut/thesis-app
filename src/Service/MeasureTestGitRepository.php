@@ -40,6 +40,9 @@ class MeasureTestGitRepository
                 [$repo->getRemote(), $tag],
                 [$analysisResult]
             );
+
+            Call::create('git add .', $repo->getLocalPath())->execute();
+            Call::create('git stash', $repo->getLocalPath())->execute();
         }
 
         return $results;

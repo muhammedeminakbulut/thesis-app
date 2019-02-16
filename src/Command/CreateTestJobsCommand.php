@@ -56,12 +56,7 @@ class CreateTestJobsCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $i = 0;
         foreach ($this->repoFeed->getRepositories() as $gitRepoUrl) {
-            if ($i > 100) {
-                break;
-            }
-            $i++;
             $this->queue->useTube('measure-test')->put(
                 json_encode(
                     [

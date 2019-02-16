@@ -33,7 +33,7 @@ class TestCoverageGitRepository
         }
 
         $result = Call::create(
-            'composer install',
+            'composer install -n -q --no-scripts --no-progress --no-suggest',
             $repo->getLocalPath()
         )->execute();
 
