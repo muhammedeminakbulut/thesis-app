@@ -17,8 +17,11 @@ services:
             $feed: '%kernel.root_dir%/../data/popular-php-repositories.json'
             $defaultCSVDirectory: '%kernel.root_dir%/../data'
             $mergedDataPath: '%kernel.root_dir%/../data/merged-data/merged-data.csv'
+            $mergedTestDataPath: '%kernel.root_dir%/../data/merged-data/merged-test-data.csv'
+            $mergedMetricTestDataPath: '%kernel.root_dir%/../data/merged-data/merged-metrics-test-data.csv'
             $scoreErrorsPath: '%kernel.root_dir%/../data/merged-data/error-score-data.csv'
             $rateDataPath: '%kernel.root_dir%/../data/merged-data/rated-data.csv'
+            $rateTestDataPath: '%kernel.root_dir%/../data/merged-data/rated-test-data.csv'
             $cwd: '%kernel.root_dir%/..'
 
 

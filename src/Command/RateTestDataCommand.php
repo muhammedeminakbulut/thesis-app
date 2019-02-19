@@ -9,23 +9,38 @@ use App\Service\OutlierCleanup;
 use App\Service\Percentiles;
 use League\Csv\Reader;
 use League\Csv\Statement;
+use League\Csv\Writer;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class ClassifyScoresCommand extends Command
+class RateTestDataCommand extends Command
 {
+    /**
+     * @var string
+     */
+    private $rateTestDataPath;
+
+    /**
+     * RateDataCommand constructor.
+     * @param string $rateTestDataPath
+     */
+    public function __construct(string $rateTestDataPath)
+    {
+        parent::__construct();
+        $this->rateTestDataPath = $rateTestDataPath;
+    }
+
+
     public function configure()
     {
-        $this->setName('app:classify')->setDescription('score error data');
+        $this->setName('app:rate-test')->setDescription('score error data');
         $this->setDefinition(
             new InputDefinition(
                 [
                     new InputArgument('from-file', InputArgument::REQUIRED),
-                    new InputArgument('column', InputArgument::REQUIRED),
-                    new InputArgument('sort-order', InputArgument::REQUIRED),
                 ]
             )
         );
@@ -39,12 +54,42 @@ class ClassifyScoresCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $filePath = $input->getArgument('from-file');
-        $column = $input->getArgument('column');
-        $sortOrder = $input->getArgument('sort-order');
 
         $reader = Reader::createFromPath($filePath);
         $reader->setHeaderOffset(0);
 
+        $columns = [
+            'coverage' => 'asc',
+        ];
+
+        $columnPercentile = [];
+        foreach ($columns as $column => $sortOrder) {
+            $columnPercentile[$column] = $this->getColumnPercentile($reader,  $column, $sortOrder);
+        }
+        if (!file_exists($this->rateTestDataPath)) {
+            touch($this->rateTestDataPath);
+        }
+        $writer = Writer::createFromPath($this->rateTestDataPath);
+        $writer->insertOne([
+            'repository',
+            'tag',
+            'coverage',
+        ]);
+
+        foreach($reader->getRecords() as $record) {
+            $writer->insertOne([
+                    $record['repository'],
+                    $record['tag'],
+                    Percentiles::classifyScoreAsc($record['coverage'], $columnPercentile['coverage']),
+                ]
+            );
+        }
+
+        return true;
+    }
+
+    private function getColumnPercentile(Reader $reader, $column, $sortOrder)
+    {
         $records = (new Statement())->process($reader);
         $columnData = [];
         foreach ($records->fetchColumn($column) as $value) {
@@ -73,12 +118,6 @@ class ClassifyScoresCommand extends Command
             rsort($data);
         }
 
-        $percentiles = Percentiles::calculatePercentiles($data);
-
-        foreach ($percentiles as $key => $value) {
-            $output->writeln(sprintf('percentile %s: %s', $key, $value));
-        }
-
-        return true;
+        return Percentiles::calculatePercentiles($data);
     }
 }
