@@ -52,7 +52,6 @@ class CorrelateCommand extends Command
             'analyser_duplication',
             'analyser_unit_size',
             'sniffer_errors',
-            'sniffer_errors_per_loc',
             'analyser_forks',
             'analyser_contributor',
         ];
@@ -79,7 +78,6 @@ class CorrelateCommand extends Command
                 ['Duplication', 'Sniffer errors', Correlation::spearmansRho($this->getColumnData($reader, 'analyser_duplication'), $this->getColumnData($reader, 'sniffer_errors'))],
                 ['Average Unit size', 'Sniffer errors', Correlation::spearmansRho($this->getColumnData($reader, 'analyser_unit_size'), $this->getColumnData($reader, 'sniffer_errors'))],
                 ['Combined scores', 'Sniffer errors', Correlation::spearmansRho($scores, $this->getColumnData($reader, 'sniffer_errors'))],
-                ['Combined scores', 'Sniffer errors per loc', Correlation::spearmansRho($scores, $this->getColumnData($reader, 'sniffer_errors_per_loc'))],
                 ['Combined scores', 'Forks', Correlation::spearmansRho($scores, $this->getColumnData($reader, 'analyser_forks'))],
                 ['Combined scores', 'Contributors', Correlation::spearmansRho($scores, $this->getColumnData($reader, 'analyser_contributor'))],
             ])

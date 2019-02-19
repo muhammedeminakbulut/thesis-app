@@ -81,7 +81,7 @@ class MergeDataCommand extends Command
         );
 
         foreach ($files as $fileName) {
-            if ($fileName === '.' || $fileName === '..') {
+            if ($fileName === '.' || $fileName === '..' || $fileName === '.gitignore') {
                 continue;
             }
 
